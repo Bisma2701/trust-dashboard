@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+  if (localStorage.getItem('token')) {
+    document.documentElement.classList.add('is-authed');
+  }
+</script>
+<meta charset="UTF-8">
+<title>Trust Dashboard — Know Where Each Relationship Stands</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="wrap">
+
+  <nav class="navbar">
+    <a class="logo" href="index.html">Trust Dashboard</a>
+    <div class="nav-actions auth-guest">
+      <a class="btn btn-ghost" href="login.html">Log In</a>
+      <a class="btn btn-primary" href="signup.html">Get Started</a>
+    </div>
+    <div class="nav-actions auth-user">
+      <a class="btn btn-primary" href="app.html">Go to Dashboard</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <span class="hero-kicker">A private, personal tool</span>
+      <h1>Know who actually has your back.</h1>
+      <p class="hero-sub">Register the people in your life, score them across trust qualities and red-flag patterns, log what actually happened, and let the numbers show you where each relationship really stands — quietly, on your own account, for your eyes only.</p>
+      <div class="hero-actions auth-guest">
+        <a class="btn btn-primary" href="signup.html">Get Started</a>
+        <a class="btn btn-ghost" href="login.html">Log In</a>
+      </div>
+      <div class="hero-actions auth-user">
+        <a class="btn btn-primary" href="app.html">Go to Dashboard</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="card">
+        <div class="person-card" style="cursor:default;">
+          <div class="pname">Sara</div>
+          <div class="prel">Close Friend · Core</div>
+          <div class="bar-line">
+            <span class="bar-label">Trust</span>
+            <div class="bar-track"><div class="bar-fill" style="width:84%"></div></div>
+            <span class="bar-num">84</span>
+          </div>
+          <div class="bar-line">
+            <span class="bar-label">Risk</span>
+            <div class="bar-track"><div class="bar-fill risk" style="width:6%"></div></div>
+            <span class="bar-num">6</span>
+          </div>
+          <span class="cat-badge cat-inner">Inner Circle</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="person-card" style="cursor:default;">
+          <div class="pname">A colleague</div>
+          <div class="prel">Colleague · Medium</div>
+          <div class="bar-line">
+            <span class="bar-label">Trust</span>
+            <div class="bar-track"><div class="bar-fill" style="width:52%"></div></div>
+            <span class="bar-num">52</span>
+          </div>
+          <div class="bar-line">
+            <span class="bar-label">Risk</span>
+            <div class="bar-track"><div class="bar-fill risk" style="width:47%"></div></div>
+            <span class="bar-num">47</span>
+          </div>
+          <span class="cat-badge cat-caution">Caution</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="landing-section">
+    <div class="section-heading">
+      <h2>Everything you need to read a relationship clearly</h2>
+      <p>No spreadsheets, no guesswork — a structured way to track the people you rely on and the ones you're wary of.</p>
+    </div>
+    <div class="grid3">
+      <div class="card feature-card">
+        <h3 class="section-title">Register the people you know</h3>
+        <p class="section-sub" style="margin-bottom:0;">Name, relationship type — Family, Close Friend, Business Partner, Colleague, and more — context, and priority. Register once, and they show up everywhere you need them.</p>
+      </div>
+      <div class="card feature-card">
+        <h3 class="section-title">Score what matters</h3>
+        <p class="section-sub" style="margin-bottom:0;">11 weighted trust qualities like Honesty, Reliability and Non-Exploitation, plus 7 red-flag risk dimensions like Manipulation and Retaliation — each scored by severity and how confident you actually are.</p>
+      </div>
+      <div class="card feature-card">
+        <h3 class="section-title">Log the evidence, not just the feeling</h3>
+        <p class="section-sub" style="margin-bottom:0;">Separate Fact from Interpretation from Fear/Prediction. Record what happened before you decide what it means.</p>
+      </div>
+      <div class="card feature-card">
+        <h3 class="section-title">See it clearly</h3>
+        <p class="section-sub" style="margin-bottom:0;">Automatic Trust % and Risk % per person, sorted into plain categories — Inner Circle, Trusted, Limited Trust, Caution, High Risk / Distance — with charts you can drill into.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="landing-section">
+    <div class="section-heading">
+      <h2>How it works</h2>
+      <p>Four simple steps, all in one private dashboard.</p>
+    </div>
+    <div class="steps-row">
+      <div class="step">
+        <span class="step-num">01</span>
+        <h3>Register</h3>
+        <p>Add a person and how you know them.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <h3>Score</h3>
+        <p>Rate trust qualities and any red flags, with evidence.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <h3>Log</h3>
+        <p>Note what happens as it happens.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">04</span>
+        <h3>Review</h3>
+        <p>Check the dashboard monthly or quarterly — a guide, not a verdict.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIVACY -->
+  <section class="landing-section tinted">
+    <div class="section-heading" style="margin-bottom:0;">
+      <h2>Yours alone</h2>
+      <p>This is a private, single-user tool — nothing here is shared, synced, or visible to anyone but you. Scores and categories are decision-support aids to help you notice patterns over time, not diagnostic conclusions about any person.</p>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="card cta-band">
+    <h2>Start seeing your relationships clearly.</h2>
+    <div class="hero-actions auth-guest">
+      <a class="btn btn-primary" href="signup.html">Get Started</a>
+      <a class="btn btn-ghost" href="login.html">Log In</a>
+    </div>
+    <div class="hero-actions auth-user">
+      <a class="btn btn-primary" href="app.html">Go to Dashboard</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="logo">Trust Dashboard</div>
+    <p>A private, personal tool for tracking trust and risk in your relationships.</p>
+  </footer>
+
+</div>
+
+</body>
+</html>

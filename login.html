@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Log In - Trust Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="split-auth">
+    <div class="brand-panel">
+      <a class="logo" href="index.html">Trust Dashboard</a>
+      <p>"A guide, not a verdict." Log back in to keep tracking where each relationship really stands.</p>
+      <div class="brand-chips">
+        <span class="cat-badge cat-inner">Inner Circle</span>
+        <span class="cat-badge cat-trusted">Trusted</span>
+        <span class="cat-badge cat-caution">Caution</span>
+      </div>
+    </div>
+    <div class="form-panel">
+      <h2 class="section-title">Log In</h2>
+      <p class="section-sub">Welcome back. Enter your credentials to access your dashboard.</p>
+      <div id="error-msg" class="form-error" style="display:none;"></div>
+
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="••••••••">
+      </div>
+
+      <button class="btn btn-primary" id="loginBtn" style="width:100%; margin-top:15px;">Log In</button>
+
+      <div class="auth-links">
+        <a href="signup.html">Create an account</a>
+        <a href="forgot-password.html">Forgot password?</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  if(localStorage.getItem('token')) {
+    window.location.href = 'app.html';
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const errorMsg = document.getElementById('error-msg');
+    const loginBtn = document.getElementById('loginBtn');
+
+    if(!email || !password) {
+      errorMsg.textContent = 'Please fill all fields.';
+      errorMsg.style.display = 'block';
+      return;
+    }
+
+    errorMsg.style.display = 'none';
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Logging in…';
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+
+      if(!res.ok) {
+        errorMsg.textContent = data.error || 'Login failed';
+        errorMsg.style.display = 'block';
+      } else {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userName', data.user.name);
+        window.location.href = 'app.html';
+        return;
+      }
+    } catch (e) {
+      errorMsg.textContent = 'An error occurred. Please try again.';
+      errorMsg.style.display = 'block';
+    }
+
+    loginBtn.disabled = false;
+    loginBtn.textContent = 'Log In';
+  });
+</script>
+</body>
+</html>

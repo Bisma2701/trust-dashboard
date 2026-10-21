@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sign Up - Trust Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="split-auth">
+    <div class="brand-panel">
+      <a class="logo" href="index.html">Trust Dashboard</a>
+      <p>Register the people in your life, score trust and red flags, and see where each relationship really stands — private, and just for you.</p>
+      <div class="brand-chips">
+        <span class="cat-badge cat-inner">Inner Circle</span>
+        <span class="cat-badge cat-trusted">Trusted</span>
+        <span class="cat-badge cat-caution">Caution</span>
+      </div>
+    </div>
+    <div class="form-panel">
+      <h2 class="section-title">Sign Up</h2>
+      <p class="section-sub">Create your account to start tracking relationships.</p>
+      <div id="error-msg" class="form-error" style="display:none;"></div>
+
+      <div class="field">
+        <label>Name</label>
+        <input type="text" id="name" placeholder="Your Name">
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="••••••••">
+      </div>
+
+      <button class="btn btn-primary" id="signupBtn" style="width:100%; margin-top:15px;">Create Account</button>
+
+      <div class="auth-links">
+        <a href="login.html">Already have an account? Log in</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  if(localStorage.getItem('token')) {
+    window.location.href = 'app.html';
+  }
+
+  document.getElementById('signupBtn').addEventListener('click', async () => {
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const errorMsg = document.getElementById('error-msg');
+    const signupBtn = document.getElementById('signupBtn');
+
+    if(!name || !email || !password) {
+      errorMsg.textContent = 'Please fill all fields.';
+      errorMsg.style.display = 'block';
+      return;
+    }
+
+    errorMsg.style.display = 'none';
+    signupBtn.disabled = true;
+    signupBtn.textContent = 'Creating account…';
+
+    try {
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      const data = await res.json();
+
+      if(!res.ok) {
+        errorMsg.textContent = data.error || 'Signup failed';
+        errorMsg.style.display = 'block';
+      } else {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userName', data.user.name);
+        window.location.href = 'app.html';
+        return;
+      }
+    } catch (e) {
+      errorMsg.textContent = 'An error occurred. Please try again.';
+      errorMsg.style.display = 'block';
+    }
+
+    signupBtn.disabled = false;
+    signupBtn.textContent = 'Create Account';
+  });
+</script>
+</body>
+</html>

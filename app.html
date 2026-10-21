@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+  if(!localStorage.getItem('token')) {
+    window.location.href = 'login.html';
+  }
+</script>
+<meta charset="UTF-8">
+<title>Relationship Trust &amp; Risk Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Relationship Trust &amp; Risk Dashboard</h1>
+      <p>Register people, score them across trust qualities and red-flag patterns, log evidence, and see where each relationship sits — as a guide, not a verdict.</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
+      <div class="today-pill" id="todayPill"></div>
+      <button class="btn btn-logout" onclick="localStorage.removeItem('token'); window.location.href='login.html';">Log out</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="people">People</button>
+    <button class="tab-btn" data-tab="quality">Score Qualities</button>
+    <button class="tab-btn" data-tab="risk">Score Risk</button>
+    <button class="tab-btn" data-tab="observations">Observations</button>
+    <button class="tab-btn" data-tab="monthly">Monthly Check-In</button>
+    <button class="tab-btn" data-tab="dashboard">Dashboard</button>
+    <button class="tab-btn" data-tab="guide">Guide</button>
+  </nav>
+
+  <!-- PEOPLE -->
+  <section class="tab-panel active" id="panel-people">
+    <div class="card">
+      <h2 class="section-title">Register a person</h2>
+      <p class="section-sub">Enter each person once. They'll then appear on every scoring tab and the dashboard.</p>
+      <div class="grid2">
+        <div class="field"><label>Name</label><input type="text" id="p-name" placeholder="e.g. Sara"></div>
+        <div class="field"><label>Unique ID <span style="color:red">*</span></label><input type="text" id="p-uid" placeholder="e.g. 4567" maxlength="4" pattern="\d{1,4}" oninput="this.value=this.value.replace(/[^0-9]/g,'');"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Relationship</label>
+          <select id="p-rel">
+            <option>Family</option><option>Close Friend</option><option>Friend</option>
+            <option>Business Partner</option><option>Colleague</option><option>Acquaintance</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field"><label>Context / how I know them</label><input type="text" id="p-context" placeholder="e.g. Long-term unconditional support"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Priority</label>
+          <select id="p-priority"><option>Core</option><option>High</option><option>Medium</option><option>Low</option></select>
+        </div>
+        <div></div>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-primary" id="addPersonBtn">Add person</button>
+        <button class="btn btn-secondary" onclick="validateAndGo('people', 'quality')">Next</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">People registry</h2>
+      <div id="peopleTableHolder"></div>
+    </div>
+  </section>
+
+  <!-- SCORE QUALITIES -->
+  <section class="tab-panel" id="panel-quality">
+    <div class="card">
+      <h2 class="section-title">Score trust qualities</h2>
+      <p class="section-sub">1 = consistently poor · 5 = mixed / uncertain · 10 = repeatedly excellent. Score the behavior, not your mood.</p>
+      <div class="field"><label>Person <span style="color:red">*</span></label><select id="q-person"></select></div>
+      <div id="qualityDims"></div>
+      <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+        <button class="btn btn-primary" onclick="validateAndGo('quality', 'risk')">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCORE RISK -->
+  <section class="tab-panel" id="panel-risk">
+    <div class="card">
+      <h2 class="section-title">Score red-flag patterns</h2>
+      <p class="section-sub">Severity: 0 none · 1 isolated/minor · 2 repeated/meaningful · 3 serious/repeated. Confidence: 1 rumor/fear · 3 plausible but incomplete · 5 directly verified. Don't use severity 3 for a suspicion alone.</p>
+      <div class="field"><label>Person <span style="color:red">*</span></label><select id="r-person"></select></div>
+      <div id="riskDims"></div>
+
+      <div style="margin-top:40px;">
+        <h3 class="chart-label">Monthly Score Dashboard (Trend)</h3>
+        <p class="section-sub">A simulated view of risk scores over the last 6 months.</p>
+        <div class="chart-holder" style="height:220px;"><canvas id="monthlyRiskChart"></canvas></div>
+      </div>
+      <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+        <button class="btn btn-primary" onclick="validateAndGo('risk', 'observations')">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- OBSERVATIONS -->
+  <section class="tab-panel" id="panel-observations">
+    <div class="card">
+      <h2 class="section-title">Log an observation</h2>
+      <p class="section-sub">Record before you judge — separate what happened from what it might mean.</p>
+      <div class="grid3">
+        <div class="field"><label>Date</label><input type="date" id="o-date"></div>
+        <div class="field"><label>Person</label><select id="o-person"></select></div>
+        <div class="field"><label>Type</label>
+          <select id="o-type"><option>Fact</option><option>Interpretation</option><option>Fear/Prediction</option></select>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Context</label><select id="o-context"><option>Positive</option><option>Negative</option></select></div>
+        <div class="field"><label>Impact (1–5)</label><input type="number" id="o-impact" min="1" max="5" value="3" onkeydown="if(['e','E','+','-','.'].includes(event.key)) event.preventDefault();" oninput="if(this.value>5)this.value=5;if(this.value<1&&this.value!=='')this.value=1;"></div>
+      </div>
+      <div class="field"><label>What actually happened</label><textarea id="o-what" placeholder="Describe the event plainly"></textarea></div>
+      <div class="field"><label>What I'll do / check next</label><input type="text" id="o-action" placeholder="e.g. Verify before drawing conclusions"></div>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-primary" id="addObsBtn">Add to log</button>
+        <button class="btn btn-success" onclick="validateAndGo('observations', 'dashboard')">Done</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="section-title">Evidence log</h2>
+      <div id="obsTableHolder"></div>
+    </div>
+  </section>
+
+  <!-- MONTHLY CHECK-IN -->
+  <section class="tab-panel" id="panel-monthly">
+    <div class="card">
+      <h2 class="section-title">Monthly Check-In Dashboard</h2>
+      <p class="section-sub">Save the current scores for each person this month to track historical trends.</p>
+      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <select id="m-person" style="max-width: 200px;"></select>
+        <button class="btn btn-primary" id="saveCheckInBtn">Save Current Scores for this Month</button>
+        <span id="saved-monthly-indicator" style="display:none; color:green; font-size:14px; margin-top:10px;">Saved ✅</span>
+      </div>
+      
+      <div id="monthlyGrid" style="display: flex; flex-direction: column; gap: 20px;"></div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section class="tab-panel" id="panel-dashboard">
+    <div class="stat-row" id="dashStats"></div>
+
+    <div class="card">
+      <h2 class="section-title">People</h2>
+      <p class="section-sub">Click a person to see their full breakdown below.</p>
+      <div class="person-grid" id="personGrid"></div>
+    </div>
+
+    <div class="card" id="detailCard" style="display:none;">
+      <h2 class="section-title" id="detailName"></h2>
+      <p class="section-sub" id="detailMeta"></p>
+      <div class="grid2">
+        <div>
+          <h3 class="chart-label">Trust qualities</h3>
+          <div class="chart-holder"><canvas id="chartQuality"></canvas></div>
+        </div>
+        <div>
+          <h3 class="chart-label">Risk signals</h3>
+          <div class="chart-holder"><canvas id="chartRisk"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Category mix</h2>
+      <div class="chart-holder" style="height:260px;"><canvas id="chartCategoryMix"></canvas></div>
+    </div>
+  </section>
+
+  <!-- GUIDE -->
+  <section class="tab-panel" id="panel-guide">
+    <div class="card">
+      <h2 class="section-title">How to use this</h2>
+      <div class="mini-guide-note">Use trust and risk scores as a guide, not a verdict. Look for patterns across time rather than reacting to one good or bad day.</div>
+      <table>
+        <thead><tr><th>Section</th><th>Rule</th><th>Meaning</th><th>Action</th></tr></thead>
+        <tbody id="guideTable"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<!-- Custom Alert Modal -->
+<div id="customAlertModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <div class="custom-modal-header">
+      <span class="custom-modal-title">Notice</span>
+      <span class="custom-modal-close" onclick="closeCustomAlert()">&times;</span>
+    </div>
+    <div class="custom-modal-body" id="customAlertMessage">
+      Message goes here.
+    </div>
+    <div class="custom-modal-footer">
+      <button class="btn btn-primary" onclick="closeCustomAlert()">OK</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
