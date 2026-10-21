@@ -22,7 +22,7 @@ if (!JWT_SECRET) {
 app.use(cors());
 app.use(express.json());
 // Serve static frontend files
-app.use(express.static(path.join(__dirname)));
+     app.use(express.static(path.join(__dirname, 'public')));
 
 // Sync Database
 sequelize.sync({ alter: true }).then(() => console.log('Database synced')).catch(console.error);
@@ -288,6 +288,10 @@ app.post('/api/history', authenticateToken, async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+   if (!process.env.VERCEL) {
+     app.listen(PORT, () => {
+       console.log(`Server running on http://localhost:${PORT}`);
+     });
+   }
+
+   module.exports = app;
